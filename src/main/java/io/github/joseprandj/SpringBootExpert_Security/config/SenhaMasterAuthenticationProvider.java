@@ -1,4 +1,4 @@
-package io.github.joseprandj.SpringBootExpert_Security.api.controller;
+package io.github.joseprandj.SpringBootExpert_Security.config;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -19,7 +19,7 @@ public class SenhaMasterAuthenticationProvider implements AuthenticationProvider
         String senha = (String) authentication.getCredentials();
 
         String loginMaster = "master";
-        String senhaMaster = "@321";
+        String senhaMaster = "123";
 
         if (loginMaster.equals(login) && senhaMaster.equals(senha)) {
             return new UsernamePasswordAuthenticationToken(

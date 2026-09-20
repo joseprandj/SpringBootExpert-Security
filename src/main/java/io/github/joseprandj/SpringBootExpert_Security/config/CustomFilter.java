@@ -1,4 +1,4 @@
-package io.github.joseprandj.SpringBootExpert_Security.api.controller;
+package io.github.joseprandj.SpringBootExpert_Security.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,7 +24,7 @@ public class CustomFilter extends OncePerRequestFilter {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
                     "Muito Secreto",
                     null,
-                    List.of(new SimpleGrantedAuthority("ADMIN"))
+                    List.of(new SimpleGrantedAuthority("USER"))
                 );
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);

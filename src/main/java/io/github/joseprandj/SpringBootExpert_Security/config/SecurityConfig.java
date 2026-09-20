@@ -1,12 +1,13 @@
 package io.github.joseprandj.SpringBootExpert_Security.config;
 
-import io.github.joseprandj.SpringBootExpert_Security.api.controller.CustomFilter;
-import io.github.joseprandj.SpringBootExpert_Security.api.controller.SenhaMasterAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,15 +19,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
     @Bean // Responsável por registrar a cadeia de filtros de segurança no contexto do Sping
     public SecurityFilterChain securityFilterChain(
         HttpSecurity http,
         SenhaMasterAuthenticationProvider senhaMasterAuthenticationProvider,
+        CustomAuthenticationProvider customAuthenticationProvider,
         CustomFilter customFilter
         ) throws Exception {
             return http
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(customizer -> {
                     customizer.requestMatchers("/public").permitAll();
                     customizer.anyRequest().authenticated();
@@ -34,6 +38,7 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
                 .authenticationProvider(senhaMasterAuthenticationProvider)
+                .authenticationProvider(customAuthenticationProvider)
                 .addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
@@ -50,7 +55,7 @@ public class SecurityConfig {
         UserDetails admUser = User
             .builder()
             .username("admin")
-            .password(passwordEncoder().encode("admin"))
+            .password(passwordEncoder().encode("123"))
             .roles("ADMIN")
             .build();
 
@@ -60,5 +65,10 @@ public class SecurityConfig {
     @Bean // Responsável por realizar a verificação de senha
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public GrantedAuthorityDefaults grantedAuthorityDefaults() {
+        return new GrantedAuthorityDefaults("");
     }
 }
