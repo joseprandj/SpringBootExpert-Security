@@ -1,5 +1,7 @@
 package io.github.joseprandj.SpringBootExpert_Security.config;
 
+import io.github.joseprandj.SpringBootExpert_Security.domain.security.CustomAuthentication;
+import io.github.joseprandj.SpringBootExpert_Security.domain.security.IdentificacaoUsuario;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,11 +23,14 @@ public class CustomFilter extends OncePerRequestFilter {
         String secretHeader = request.getHeader("x-secret");
         if (secretHeader != null) {
             if (secretHeader.equals("secr3t")) {
-                Authentication authentication = new UsernamePasswordAuthenticationToken(
+                IdentificacaoUsuario identificacaoUsuario = new IdentificacaoUsuario(
+                    "id-secret",
                     "Muito Secreto",
-                    null,
-                    List.of(new SimpleGrantedAuthority("USER"))
+                    "x-secret",
+                    List.of("USER")
                 );
+
+                Authentication authentication = new CustomAuthentication(identificacaoUsuario);
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

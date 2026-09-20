@@ -1,5 +1,7 @@
 package io.github.joseprandj.SpringBootExpert_Security.config;
 
+import io.github.joseprandj.SpringBootExpert_Security.domain.security.CustomAuthentication;
+import io.github.joseprandj.SpringBootExpert_Security.domain.security.IdentificacaoUsuario;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,11 +24,14 @@ public class SenhaMasterAuthenticationProvider implements AuthenticationProvider
         String senhaMaster = "123";
 
         if (loginMaster.equals(login) && senhaMaster.equals(senha)) {
-            return new UsernamePasswordAuthenticationToken(
+            IdentificacaoUsuario identificacaoUsuario = new IdentificacaoUsuario(
                 "Sou Master",
-                null,
-                List.of(new SimpleGrantedAuthority("ADMIN"))
+                "Sou Master",
+                "Master",
+                List.of("ADMIN")
             );
+
+            return new CustomAuthentication(identificacaoUsuario);
         }
 
         return null;
